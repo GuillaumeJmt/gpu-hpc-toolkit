@@ -26,12 +26,12 @@ from rich import box
 
 console = Console()
 
-# Simulated GPU specifications (realistic NVIDIA A100 data)
+# Simulated NVIDIA GPU data (fictional specs for demo purposes)
 GPUS = [
-    {"index": 0, "name": "NVIDIA A100-SXM4-40GB", "mem_total": 40960},
-    {"index": 1, "name": "NVIDIA A100-SXM4-40GB", "mem_total": 40960},
-    {"index": 2, "name": "NVIDIA A100-SXM4-40GB", "mem_total": 40960},
-    {"index": 3, "name": "NVIDIA A100-SXM4-40GB", "mem_total": 40960},
+    {"index": 0, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
+    {"index": 1, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
+    {"index": 2, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
+    {"index": 3, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
 ]
 
 def simulate_gpu_metrics(gpu):
@@ -125,7 +125,7 @@ def render():
 
     gpu_panel = Panel(
         make_gpu_table(metrics),
-        title="[bold]GPU Status (simulated NVIDIA A100)[/bold]",
+        title="[bold]GPU Status (simulated NVIDIA GPU data)[/bold]",
         border_style="green"
     )
 

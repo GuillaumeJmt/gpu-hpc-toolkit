@@ -1,13 +1,13 @@
 # GPU HPC Toolkit
 
-GPU monitoring and job templates for HPC clusters with NVIDIA GPUs.
-Developed on Apple M1 (no CUDA) - GPU monitoring uses simulated data,
-jobscripts validated against real cluster documentation.
+GPU monitoring demo using simulated data (no GPU hardware available),
+and cluster-convention jobscripts for NVIDIA GPU workloads.
+Developed on Apple M1 (no CUDA); jobscripts validated against real cluster documentation.
 
 ## Contents
 
 ### scripts/
-- gpu_monitor_sim.py - Real-time GPU dashboard (simulated NVIDIA A100 data)
+- gpu_monitor_sim.py - GPU monitoring demo using simulated NVIDIA GPU data
 
 ### examples/
 - pytorch-single-gpu.sh - PyTorch training on 1 GPU
@@ -31,7 +31,7 @@ On a real cluster with NVIDIA GPUs:
 
     #SBATCH --partition=gpu        # GPU partition
     #SBATCH --gres=gpu:1           # Request 1 GPU
-    #SBATCH --gres=gpu:a100:2      # Request 2 A100 specifically
+    #SBATCH --gres=gpu:GPUTYPE:2   # Request a specific GPU type by name (e.g., v100, a100)
 
 Check GPU allocation in job:
 
@@ -68,4 +68,4 @@ Check CUDA_VISIBLE_DEVICES, verify module load CUDA.
 
 This toolkit was developed on Apple M1 which uses Metal (not CUDA).
 GPU jobscripts follow CECI/ULB cluster conventions.
-Monitoring dashboard uses realistic simulated data for demonstration.
+Monitoring dashboard uses simulated data for demonstration (no CUDA / Apple M1 Metal).
