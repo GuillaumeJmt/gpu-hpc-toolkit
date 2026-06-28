@@ -11,8 +11,10 @@ Developed on Apple M1 (no CUDA); jobscripts validated against real cluster docum
 
 ### examples/
 - pytorch-single-gpu.sh - PyTorch training on 1 GPU
-- pytorch-multi-gpu.sh - PyTorch DDP on 4 GPUs with torchrun
 - gromacs-gpu.sh - GROMACS MD simulation with GPU offloading
+
+**Note:** Lyra nodes have a single GPU each; scaling beyond one GPU means multi-node DDP
+(torchrun --nnodes). Not included here, as I have no multi-GPU hardware to validate.
 
 ## GPU monitoring
 
