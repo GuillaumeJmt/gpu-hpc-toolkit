@@ -2,7 +2,7 @@
 
 GPU monitoring demo using simulated data (no GPU hardware available),
 and cluster-convention jobscripts for NVIDIA GPU workloads.
-Developed on Apple M1 (no CUDA); jobscripts validated against real cluster documentation.
+Developed on Apple M1 (no CUDA); jobscripts checked against real cluster documentation.
 
 ## Contents
 
