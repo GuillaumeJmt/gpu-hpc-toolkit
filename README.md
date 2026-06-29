@@ -7,7 +7,7 @@ Developed on Apple M1 (no CUDA); jobscripts validated against real cluster docum
 ## Contents
 
 ### scripts/
-- gpu_monitor_sim.py - GPU monitoring demo using simulated NVIDIA GPU data
+- gpu_monitor_sim.py - GPU monitoring demo, 1 GPU/node (RTX 6000 Ada 48 GB), simulated
 
 ### examples/
 - pytorch-single-gpu.sh - PyTorch training on 1 GPU

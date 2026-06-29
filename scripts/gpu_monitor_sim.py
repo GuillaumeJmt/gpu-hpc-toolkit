@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
 gpu_monitor_sim.py - Simulated GPU monitoring dashboard.
+*** SYNTHETIC / DEMO ONLY - produces no real measurements. ***
 
 Simulates nvidia-smi output format for learning and demonstration.
+Topology mirrors ULB Lyra: one NVIDIA RTX 6000 Ada (48 GB) per node, so a
+multi-GPU workload spans multiple nodes (see the Slurm allocation panel).
 On a real cluster, replace simulated data with nvidia-smi queries.
 
 Real usage on cluster:
@@ -17,7 +20,7 @@ import argparse
 import time
 import random
 from datetime import datetime
-from rich.console import Console
+from rich.console import Console, Group
 from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
@@ -26,21 +29,18 @@ from rich import box
 
 console = Console()
 
-# Simulated NVIDIA GPU data (fictional specs for demo purposes)
+# Simulated GPU data. One GPU per node, matching Lyra (RTX 6000 Ada, 48 GB).
 GPUS = [
-    {"index": 0, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
-    {"index": 1, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
-    {"index": 2, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
-    {"index": 3, "name": "NVIDIA GPU [simulated]", "mem_total": 40960},
+    {"index": 0, "name": "NVIDIA RTX 6000 Ada [simulated]", "mem_total": 49152},
 ]
 
 def simulate_gpu_metrics(gpu):
-    """Generate realistic GPU metrics."""
+    """Generate plausible GPU metrics (random, not measured)."""
     util = random.randint(0, 100)
     mem_used = int(gpu["mem_total"] * util / 100 * random.uniform(0.8, 1.2))
     mem_used = min(mem_used, gpu["mem_total"])
     temp = random.randint(30, 85)
-    power = random.randint(50, 400)
+    power = random.randint(50, 300)
     return {
         "util": util,
         "mem_used": mem_used,
@@ -53,10 +53,10 @@ def make_gpu_table(metrics_list):
     """Build GPU status table."""
     table = Table(box=box.ROUNDED, show_header=True, padding=(0, 1))
     table.add_column("GPU", width=4, style="dim")
-    table.add_column("Name", width=28)
+    table.add_column("Name", width=30)
     table.add_column("Util%", width=8)
     table.add_column("GPU Bar", width=22)
-    table.add_column("VRAM Used", width=12)
+    table.add_column("VRAM Used", width=14)
     table.add_column("VRAM Bar", width=22)
     table.add_column("Temp", width=6)
     table.add_column("Power", width=8)
@@ -88,52 +88,60 @@ def make_gpu_table(metrics_list):
     return table
 
 def make_slurm_info():
-    """Simulate Slurm GPU allocation info."""
-    table = Table(box=box.SIMPLE, show_header=True, padding=(0,1))
+    """Simulate Slurm GPU allocations. 1 GPU/node => multi-GPU jobs span nodes."""
+    table = Table(box=box.SIMPLE, show_header=True, padding=(0, 1))
     table.add_column("JobID", width=10)
     table.add_column("User", width=15)
-    table.add_column("GPU", width=5)
+    table.add_column("Node:GPU", width=14)
     table.add_column("Runtime", width=10)
     table.add_column("Software", width=15)
 
     jobs = [
-        ("12345", "researcher1", "0", "02:34:12", "PyTorch"),
-        ("12346", "researcher2", "1", "05:12:44", "TensorFlow"),
-        ("12347", "researcher3", "2", "00:45:03", "GROMACS-GPU"),
-        ("12348", "researcher4", "3", "11:02:18", "AlphaFold2"),
+        ("12345", "researcher1", "node-gpu01:0", "02:34:12", "PyTorch"),
+        ("12346", "researcher2", "node-gpu02:0", "05:12:44", "TensorFlow"),
+        ("12347", "researcher3", "node-gpu03:0", "00:45:03", "GROMACS-GPU"),
+        ("12348", "researcher4", "node-gpu04:0", "11:02:18", "AlphaFold2"),
     ]
     for job in jobs:
         table.add_row(*job)
 
-    return Panel(table, title="[bold]GPU Job Allocations (Slurm)[/bold]", border_style="blue")
+    return Panel(
+        table,
+        title="[bold]GPU Job Allocations (Slurm) - 1 GPU/node, multi-GPU = multi-node[/bold]",
+        border_style="blue",
+    )
 
 def render():
     """Render full dashboard."""
     metrics = [simulate_gpu_metrics(g) for g in GPUS]
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    banner = Text(
+        "  SYNTHETIC / DEMO ONLY - simulated data, not real GPU telemetry  ",
+        style="bold white on red", justify="center",
+    )
     header = Text(
         f"GPU Monitoring Dashboard | node-gpu01 | {now} | [simulated data]",
-        style="bold white", justify="center"
+        style="bold white", justify="center",
     )
 
     avg_util = sum(m["util"] for m in metrics) / len(metrics)
     summary = Text(
-        f"4 GPUs | Avg utilization: {avg_util:.1f}% | Driver: 535.104.05 | CUDA: 12.2",
-        style="dim", justify="center"
+        f"1 GPU/node (RTX 6000 Ada, 48 GB) | Avg utilization: {avg_util:.1f}% "
+        f"| Driver: 535.104.05 | CUDA: 12.2",
+        style="dim", justify="center",
     )
 
     gpu_panel = Panel(
         make_gpu_table(metrics),
-        title="[bold]GPU Status (simulated NVIDIA GPU data)[/bold]",
-        border_style="green"
+        title="[bold]GPU Status (simulated RTX 6000 Ada data)[/bold]",
+        border_style="green",
     )
 
-    from rich.console import Group
-    return Group(header, summary, gpu_panel, make_slurm_info())
+    return Group(banner, header, summary, gpu_panel, make_slurm_info())
 
 def main():
-    parser = argparse.ArgumentParser(description="GPU monitoring dashboard")
+    parser = argparse.ArgumentParser(description="Simulated GPU monitoring dashboard (demo only)")
     parser.add_argument("--once", action="store_true", help="Single snapshot")
     parser.add_argument("--interval", type=int, default=2)
     args = parser.parse_args()
